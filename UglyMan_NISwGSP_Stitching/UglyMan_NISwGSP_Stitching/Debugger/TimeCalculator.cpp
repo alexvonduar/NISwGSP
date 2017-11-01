@@ -7,14 +7,16 @@
 //
 
 #include "TimeCalculator.h"
+#include "opencv2/opencv.hpp"
 
 void TimeCalculator::start() {
-    begin_time = omp_get_wtime();
+    begin_time = cv::getTickCount();
 }
-double TimeCalculator::end(const string output) const {
-    double result = omp_get_wtime() - begin_time;
+int64_t TimeCalculator::end(const string output) const {
+    int64_t result = cv::getTickCount() - begin_time;
     if(output.empty() == false) {
-        printf("[TIME] %.4fs : %s\n", result, output.c_str());
+        printf("[TIME] %ds : %s\n", (int)(result / 1000000), output.c_str());
     }
     return result;
 }
+

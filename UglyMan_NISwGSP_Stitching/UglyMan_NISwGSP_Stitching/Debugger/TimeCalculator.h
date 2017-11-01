@@ -12,16 +12,16 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-#include <omp.h> /* wall-clock time */
+#include <inttypes.h>
 
 using namespace::std;
 
 class TimeCalculator {
 public:
     void start();
-    double end(const string output) const;
+    int64_t end(const string output) const;
 private:
-    double begin_time;
+    int64_t begin_time;
 };
 
 #endif /* defined(__UglyMan_Stitiching__TimeCalculator__) */
