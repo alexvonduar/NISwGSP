@@ -7,6 +7,7 @@
 //
 
 #include "MultiImages.h"
+#include <limits>
 
 MultiImages::MultiImages(const string & _file_name,
                          LINES_FILTER_FUNC * _width_filter,
@@ -559,10 +560,10 @@ FLOAT_TYPE MultiImages::getImagesMinimumLineDistortionRotation(const int _from, 
     if(images_minimum_line_distortion_rotation.empty()) {
         images_minimum_line_distortion_rotation.resize(images_data.size());
         for(int i = 0; i < images_minimum_line_distortion_rotation.size(); ++i) {
-            images_minimum_line_distortion_rotation[i].resize(images_data.size(), MAXFLOAT);
+            images_minimum_line_distortion_rotation[i].resize(images_data.size(), numeric_limits<FLOAT_TYPE>::max());
         }
     }
-    if(images_minimum_line_distortion_rotation[_from][_to] == MAXFLOAT) {
+    if(images_minimum_line_distortion_rotation[_from][_to] == numeric_limits<FLOAT_TYPE>::max()) {
         const vector<LineData> & from_lines   = images_data[_from].getLines();
         const vector<LineData> &   to_lines   = images_data[_to  ].getLines();
         const vector<Point2>   & from_project = getImagesLinesProject(_from, _to);
@@ -708,7 +709,7 @@ const vector<vector<double> > & MultiImages::getImagesGridSpaceMatchingPointsWei
                     images_polygon_space_matching_pts_weight[i].emplace_back(0);
                     que.push(dijkstraNode(j, j, 0));
                 } else {
-                    images_polygon_space_matching_pts_weight[i].emplace_back(MAXFLOAT);
+                    images_polygon_space_matching_pts_weight[i].emplace_back(numeric_limits<double>::max());
                 }
             }
             const vector<Indices> & polygons_neighbors = images_data[i].mesh_2d->getPolygonsNeighbors();
@@ -884,7 +885,7 @@ vector<pair<int, int> > MultiImages::getInitialFeaturePairs(const pair<int, int>
         const vector<FeatureDescriptor> & feature_descriptors_2 = images_data[pair_match[!p]].getFeatureDescriptors();
         for(int f1 = 0; f1 < feature_size[p]; ++f1) {
             set<FeatureDistance> feature_distance_set;
-            feature_distance_set.insert(FeatureDistance(MAXFLOAT, p, -1, -1));
+            feature_distance_set.insert(FeatureDistance(numeric_limits<double>::max(), p, -1, -1));
             for(int f2 = 0; f2 < feature_size[!p]; ++f2) {
                 const double dist = FeatureDescriptor::getDistance(feature_descriptors_1[f1], feature_descriptors_2[f2], feature_distance_set.begin()->distance);
                 if(dist < feature_distance_set.begin()->distance) {

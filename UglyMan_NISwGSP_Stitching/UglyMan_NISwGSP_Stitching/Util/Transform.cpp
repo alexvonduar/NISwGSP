@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
+#include <limits>
+
 #include "Transform.h"
 
 Mat getConditionerFromPts(const vector<Point2> & pts) {
@@ -95,8 +97,8 @@ Point_<T> applyTransform2x3(T x, T y, const Mat & matT) {
 
 template <typename T>
 Size_<T> normalizeVertices(vector<vector<Point_<T> > > & vertices) {
-    T min_x = MAXFLOAT, max_x = -MAXFLOAT;
-    T min_y = MAXFLOAT, max_y = -MAXFLOAT;
+    T min_x = numeric_limits<T>::max(), max_x = numeric_limits<T>::lowest();
+    T min_y = numeric_limits<T>::max(), max_y = numeric_limits<T>::lowest();
     for(int i = 0; i < vertices.size(); ++i) {
         for(int j = 0; j < vertices[i].size(); ++j) {
             min_x = min(min_x, vertices[i][j].x);
@@ -125,8 +127,8 @@ vector<Rect_<T> > getVerticesRects(const vector<vector<Point_<T> > > & vertices)
     vector<Rect_<T> > result;
     result.reserve(vertices.size());
     for(int i = 0; i < vertices.size(); ++i) {
-        T min_ix = MAXFLOAT, max_ix = -MAXFLOAT;
-        T min_iy = MAXFLOAT, max_iy = -MAXFLOAT;
+        T min_ix = numeric_limits<T>::max(), max_ix = numeric_limits<T>::lowest();
+        T min_iy = numeric_limits<T>::max(), max_iy = numeric_limits<T>::lowest();
         for(int j = 0; j < vertices[i].size(); ++j) {
             min_ix = min(min_ix, vertices[i][j].x);
             max_ix = max(max_ix, vertices[i][j].x);

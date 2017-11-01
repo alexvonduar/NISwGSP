@@ -9,6 +9,7 @@
 #ifndef __UglyMan_Stitiching__MultiImages__
 #define __UglyMan_Stitiching__MultiImages__
 
+#include <limits>
 #include <queue>
 
 #include "Parameter.h"
@@ -32,7 +33,7 @@ public:
     int feature_index[PAIR_COUNT];
     FeatureDistance() {
         feature_index[0] = feature_index[1] = -1;
-        distance = MAXFLOAT;
+        distance = numeric_limits<double>::max();
     }
     FeatureDistance(const double _distance,
                     const int _p_1,

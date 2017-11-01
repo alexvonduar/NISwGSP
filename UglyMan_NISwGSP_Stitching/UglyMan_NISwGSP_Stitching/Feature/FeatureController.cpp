@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
+#include <limits>
+
 #include "FeatureController.h"
 
 void FeatureDescriptor::addDescriptor(const Mat & _descriptor) {
@@ -17,7 +19,7 @@ double FeatureDescriptor::getDistance(const FeatureDescriptor & _descriptor1,
                                       const double _threshold) {
     const vector<Mat> & data1 = _descriptor1.data;
     const vector<Mat> & data2 = _descriptor2.data;
-    double result = MAXFLOAT;
+    double result = numeric_limits<double>::max();
     for(int i = 0; i < data1.size(); ++i) {
         for(int j = 0; j < data2.size(); ++j) {
             double distance = 0;
