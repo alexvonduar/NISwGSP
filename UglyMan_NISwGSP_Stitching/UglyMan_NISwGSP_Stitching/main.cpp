@@ -6,23 +6,24 @@
 //  Copyright (c) 2015 nothinglo. All rights reserved.
 //
 
-#include <iostream>
 #include "NISwGSP_Stitching.h"
 #include "TimeCalculator.h"
+#include <iostream>
 
 using namespace std;
 
-int main(int argc, const char * argv[]) {
+int main(int argc, const char *argv[]) {
 
     Eigen::initParallel(); /* remember to turn off "Hardware Multi-Threading */
     cout << "nThreads = " << Eigen::nbThreads() << endl;
     cout << "[#Images : " << argc - 1 << "]" << endl;
 
     TimeCalculator timer;
-    for(int i = 1; i < argc; ++i) {
+    for (int i = 1; i < argc; ++i) {
         cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
-        MultiImages multi_images(argv[i], LINES_FILTER_WIDTH, LINES_FILTER_LENGTH);
-        
+        MultiImages multi_images(argv[i], LINES_FILTER_WIDTH,
+                                 LINES_FILTER_LENGTH);
+
         timer.start();
         NISwGSP_Stitching niswgsp(multi_images);
 #if 0
@@ -36,9 +37,12 @@ int main(int argc, const char * argv[]) {
         /* 3D */
         niswgsp.setWeightToAlignmentTerm(1);
         niswgsp.setWeightToLocalSimilarityTerm(0.75);
-        niswgsp.setWeightToGlobalSimilarityTerm(6, 20, GLOBAL_ROTATION_3D_METHOD);
-        //niswgsp.writeImage(niswgsp.solve(BLEND_AVERAGE), BLENDING_METHODS_NAME[BLEND_AVERAGE]);
-        niswgsp.writeImage(niswgsp.solve(BLEND_LINEAR),  BLENDING_METHODS_NAME[BLEND_LINEAR]);
+        niswgsp.setWeightToGlobalSimilarityTerm(6, 20,
+                                                GLOBAL_ROTATION_3D_METHOD);
+        // niswgsp.writeImage(niswgsp.solve(BLEND_AVERAGE),
+        // BLENDING_METHODS_NAME[BLEND_AVERAGE]);
+        niswgsp.writeImage(niswgsp.solve(BLEND_LINEAR),
+                           BLENDING_METHODS_NAME[BLEND_LINEAR]);
         timer.end("[NISwGSP] " + multi_images.parameter.file_name);
     }
     return 0;
