@@ -13,13 +13,13 @@
 
 class NISwGSP_Stitching : public MeshOptimization {
 public:
-    NISwGSP_Stitching(const MultiImages & _multi_images);
+    NISwGSP_Stitching(MultiImages & _multi_images);
     
     void setWeightToAlignmentTerm(const double _weight);
     void setWeightToLocalSimilarityTerm(const double _weight);
     void setWeightToGlobalSimilarityTerm(const double _weight_beta,
                                          const double _weight_gamma,
-                                         const enum GLOBAL_ROTATION_METHODS _global_rotation_method);
+                                         const GLOBAL_ROTATION_METHODS _global_rotation_method);
     
     void writeImage(const Mat & _image, const string _post_name) const;
     

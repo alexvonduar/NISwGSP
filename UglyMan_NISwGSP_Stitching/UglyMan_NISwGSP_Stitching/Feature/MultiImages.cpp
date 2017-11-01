@@ -9,9 +9,9 @@
 #include "MultiImages.h"
 #include <limits>
 
-MultiImages::MultiImages(const string & _file_name,
+MultiImages::MultiImages(const ProgramParams & _params,
                          LINES_FILTER_FUNC * _width_filter,
-                         LINES_FILTER_FUNC * _length_filter) : parameter(_file_name) {
+                         LINES_FILTER_FUNC * _length_filter) : parameter(_params) {
     
     for(int i = 0; i < parameter.image_file_full_names.size(); ++i) {
 #ifndef NDEBUG
@@ -325,7 +325,7 @@ const vector<int> & MultiImages::getImagesVerticesStartIndex() const {
     return images_vertices_start_index;
 }
 
-const vector<SimilarityElements> & MultiImages::getImagesSimilarityElements(const enum GLOBAL_ROTATION_METHODS & _global_rotation_method) const {
+const vector<SimilarityElements> & MultiImages::getImagesSimilarityElements(const GLOBAL_ROTATION_METHODS & _global_rotation_method) const {
     const vector<vector<SimilarityElements> *> & images_similarity_elements = {
         &images_similarity_elements_2D, &images_similarity_elements_3D
     };
@@ -748,12 +748,21 @@ void MultiImages::initialFeaturePairsSpace() const {
     }
 }
 
-const vector<vector<vector<pair<int, int> > > > & MultiImages::getFeaturePairs() const {
+const vector<vector<vector<pair<int, int> > > > & MultiImages::getFeaturePairs() {
     if(feature_pairs.empty()) {
         initialFeaturePairsSpace();
-        const vector<pair<int, int> > & images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
-        for(int i = 0; i < images_match_graph_pair_list.size(); ++i) {
-            const pair<int, int> & match_pair = images_match_graph_pair_list[i];
+		const vector<pair<int, int> > & images_match_graph_pair_list = parameter.getImagesMatchGraphPairList();
+		vector<pair<int, int>> pair_list = images_match_graph_pair_list;
+		if (pair_list.size() == 0) {
+			printError("need to build graph");
+			for (int i = 0; i < parameter.images_count; ++i) {
+				for (int j = i + 1; j < parameter.images_count; ++j) {
+					pair_list.push_back(pair<int,int>(i, j));
+				}
+			}
+		}
+        for(vector<pair<int, int>>::const_iterator it = pair_list.begin(); it != pair_list.end();) {
+            const pair<int, int> & match_pair = *it;
             const vector<pair<int, int> > & initial_indices = getInitialFeaturePairs(match_pair);
             const vector<Point2> & m1_fpts = images_data[match_pair.first ].getFeaturePoints();
             const vector<Point2> & m2_fpts = images_data[match_pair.second].getFeaturePoints();
@@ -767,11 +776,18 @@ const vector<vector<vector<pair<int, int> > > > & MultiImages::getFeaturePairs()
             }
             vector<pair<int, int> > & result = feature_pairs[match_pair.first][match_pair.second];
             result = getFeaturePairsBySequentialRANSAC(match_pair, X, Y, initial_indices);
-            assert(result.empty() == false);
+			assert(result.empty() == false);
+			if (result.size() < 100) {
+				cout << "image " << it->first << " " << it->second << " have only " << result.size() << " features, remove it" << endl;
+				it = pair_list.erase(it);
+			} else {
+				++it;
+			}
 #ifndef NDEBUG
             writeImageOfFeaturePairs("sRANSAC", match_pair, result);
 #endif
-        }
+		}
+		parameter.setImagesMatchGraphPairList(pair_list);
     }
     return feature_pairs;
 }

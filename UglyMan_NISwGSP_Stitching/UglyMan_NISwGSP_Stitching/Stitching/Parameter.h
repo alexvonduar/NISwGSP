@@ -14,10 +14,11 @@
 #include <sys/stat.h>
 #include "Configure.h"
 #include "InputParser.h"
+#include "params.hpp"
 
 class Parameter {
 public:
-    Parameter(const string & _file_name);
+    Parameter(const ProgramParams & _params);
     
     string file_name, file_dir;
     string stitching_parse_file_name;
@@ -39,8 +40,9 @@ public:
     double center_image_rotation_angle;
     
     const vector<vector<bool> >   & getImagesMatchGraph() const;
-    const vector<pair<int, int> > & getImagesMatchGraphPairList() const;
-private:
+	const vector<pair<int, int> > & getImagesMatchGraphPairList() const;
+	void setImagesMatchGraphPairList(const vector<pair<int, int>>& _images_match_graph_pair_list);
+//private:
     mutable vector<vector<bool> >   images_match_graph_manually;
     mutable vector<vector<bool> >   images_match_graph_automatically; /* TODO */
     mutable vector<pair<int, int> > images_match_graph_pair_list;

@@ -8,7 +8,7 @@
 
 #include "MeshOptimization.h"
 
-MeshOptimization::MeshOptimization(const MultiImages & _multi_images) {
+MeshOptimization::MeshOptimization(MultiImages & _multi_images) {
     multi_images = &_multi_images;
     
     alignment_weight = 0;
@@ -31,7 +31,7 @@ void MeshOptimization::setWeightToLocalSimilarityTerm(const double _weight) {
 
 void MeshOptimization::setWeightToGlobalSimilarityTerm(const double _weight_beta,
                                                        const double _weight_gamma,
-                                                       const enum GLOBAL_ROTATION_METHODS _global_rotation_method) {
+                                                       const GLOBAL_ROTATION_METHODS _global_rotation_method) {
     global_similarity_weight_beta  = _weight_beta;
     global_similarity_weight_gamma = _weight_gamma;
     global_rotation_method         = _global_rotation_method;
@@ -54,7 +54,7 @@ double MeshOptimization::getGlobalSimilarityTermWeightGamma() const {
     return global_similarity_weight_gamma;
 }
 
-enum GLOBAL_ROTATION_METHODS MeshOptimization::getGlobalRotationMethod() const {
+GLOBAL_ROTATION_METHODS MeshOptimization::getGlobalRotationMethod() const {
     return global_rotation_method;
 }
 
@@ -93,8 +93,11 @@ void MeshOptimization::prepareAlignmentTerm(vector<Triplet<double> > & _triplets
         const int equation = alignment_equation.first;
         
         const vector<vector<InterpolateVertex> > & mesh_interpolate_vertex_of_matching_pts = multi_images->getInterpolateVerticesOfMatchingPoints();
-        const vector<detail::MatchesInfo> & pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
-        const vector<pair<int, int> > & images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
+		const vector<detail::MatchesInfo> & pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
+		if (multi_images->parameter.images_match_graph_pair_list.empty()) {
+			multi_images->getFeaturePairs();
+		}
+		const vector<pair<int, int> > & images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
         const vector<int> & images_vertices_start_index = multi_images->getImagesVerticesStartIndex();
 
         int eq_count = 0;
@@ -237,8 +240,11 @@ void MeshOptimization::prepareSimilarityTerm(vector<Triplet<double> > & _triplet
 }
 
 int MeshOptimization::getAlignmentTermEquationsCount() const {
-    int result = 0;
-    const vector<pair<int, int> > & images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
+	int result = 0;
+	if (multi_images->parameter.images_match_graph_pair_list.empty()) {
+		multi_images->getFeaturePairs();
+	}
+	const vector<pair<int, int> > & images_match_graph_pair_list = multi_images->parameter.getImagesMatchGraphPairList();
     const vector<detail::MatchesInfo> & pairwise_matches = multi_images->getPairwiseMatchesByMatchingPoints();
     for(int i = 0; i < images_match_graph_pair_list.size(); ++i) {
         const pair<int, int> & match_pair = images_match_graph_pair_list[i];

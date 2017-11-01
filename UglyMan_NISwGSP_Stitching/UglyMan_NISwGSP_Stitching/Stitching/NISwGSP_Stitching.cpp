@@ -8,7 +8,7 @@
 
 #include "NISwGSP_Stitching.h"
 
-NISwGSP_Stitching::NISwGSP_Stitching(const MultiImages & _multi_images) : MeshOptimization(_multi_images) {
+NISwGSP_Stitching::NISwGSP_Stitching(MultiImages & _multi_images) : MeshOptimization(_multi_images) {
     
 }
 
@@ -22,7 +22,7 @@ void NISwGSP_Stitching::setWeightToLocalSimilarityTerm(const double _weight) {
 
 void NISwGSP_Stitching::setWeightToGlobalSimilarityTerm(const double _weight_beta,
                                                         const double _weight_gamma,
-                                                        const enum GLOBAL_ROTATION_METHODS _global_rotation_method) {
+                                                        const GLOBAL_ROTATION_METHODS _global_rotation_method) {
     MeshOptimization::setWeightToGlobalSimilarityTerm(_weight_beta, _weight_gamma, _global_rotation_method);
 }
 
@@ -67,9 +67,5 @@ void NISwGSP_Stitching::writeImage(const Mat & _image, const string _post_name) 
     const Parameter & parameter = multi_images.parameter;
     string file_name = parameter.file_name;
     
-    imwrite(parameter.result_dir + file_name + "-" +
-            "[NISwGSP]" +
-            GLOBAL_ROTATION_METHODS_NAME[getGlobalRotationMethod()] +
-            _post_name +
-            ".png", _image);
+    imwrite(parameter.file_name, _image);
 }

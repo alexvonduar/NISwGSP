@@ -10,40 +10,42 @@
 #include "TimeCalculator.h"
 #include <iostream>
 
+#include "params.hpp"
+
 using namespace std;
 
 int main(int argc, const char *argv[]) {
 
+    ProgramParams params;
+
+    if (parse_cmd_args(argc, argv, params) != 0) {
+        return -1;
+    }
+
+    if (params.img_names.size() == 0) {
+        printError("we need images to process");
+        return -1;
+    } else if (params.img_names.size() == 1) {
+        // TODO: need only warp the image
+        return 0;
+    }
+
     Eigen::initParallel(); /* remember to turn off "Hardware Multi-Threading */
     cout << "nThreads = " << Eigen::nbThreads() << endl;
-    cout << "[#Images : " << argc - 1 << "]" << endl;
 
     TimeCalculator timer;
-    for (int i = 1; i < argc; ++i) {
-        cout << "i = " << i << ", [Images : " << argv[i] << "]" << endl;
-        MultiImages multi_images(argv[i], LINES_FILTER_WIDTH,
-                                 LINES_FILTER_LENGTH);
 
-        timer.start();
-        NISwGSP_Stitching niswgsp(multi_images);
-#if 0
-        /* 2D */
-        niswgsp.setWeightToAlignmentTerm(1);
-        niswgsp.setWeightToLocalSimilarityTerm(0.75);
-        niswgsp.setWeightToGlobalSimilarityTerm(6, 20, GLOBAL_ROTATION_2D_METHOD);
-        niswgsp.writeImage(niswgsp.solve(BLEND_AVERAGE), BLENDING_METHODS_NAME[BLEND_AVERAGE]);
-		niswgsp.writeImage(niswgsp.solve(BLEND_LINEAR),  BLENDING_METHODS_NAME[BLEND_LINEAR]);
-#endif
-        /* 3D */
-        niswgsp.setWeightToAlignmentTerm(1);
-        niswgsp.setWeightToLocalSimilarityTerm(0.75);
-        niswgsp.setWeightToGlobalSimilarityTerm(6, 20,
-                                                GLOBAL_ROTATION_3D_METHOD);
-        // niswgsp.writeImage(niswgsp.solve(BLEND_AVERAGE),
-        // BLENDING_METHODS_NAME[BLEND_AVERAGE]);
-        niswgsp.writeImage(niswgsp.solve(BLEND_LINEAR),
-                           BLENDING_METHODS_NAME[BLEND_LINEAR]);
-        timer.end("[NISwGSP] " + multi_images.parameter.file_name);
-    }
+    MultiImages multi_images(params, LINES_FILTER_WIDTH, LINES_FILTER_LENGTH);
+
+    timer.start();
+    NISwGSP_Stitching niswgsp(multi_images);
+
+    niswgsp.setWeightToAlignmentTerm(1);
+    niswgsp.setWeightToLocalSimilarityTerm(0.75);
+    niswgsp.setWeightToGlobalSimilarityTerm(6, 20, params.rotation_method);
+
+    niswgsp.writeImage(niswgsp.solve(params.blend),
+                       BLENDING_METHODS_NAME[params.blend]);
+    timer.end("[NISwGSP] " + multi_images.parameter.file_name);
     return 0;
 }

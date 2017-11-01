@@ -25,6 +25,8 @@
 #include <opencv2/stitching/detail/camera.hpp> /* CameraParams */
 #include <opencv2/stitching/detail/motion_estimators.hpp> /* BundleAdjusterBase */
 
+#include "params.hpp"
+
 const int PAIR_COUNT = 2;
 
 class FeatureDistance {
@@ -63,7 +65,7 @@ private:
 
 class MultiImages {
 public:
-    MultiImages(const string & _file_name,
+    MultiImages(const ProgramParams & _params,
                 LINES_FILTER_FUNC * _width_filter  = &LINES_FILTER_NONE,
                 LINES_FILTER_FUNC * _length_filter = &LINES_FILTER_NONE);
     
@@ -73,7 +75,7 @@ public:
     
     const vector<vector<bool> > & getImagesFeaturesMaskByMatchingPoints() const;
     
-    const vector<vector<vector<pair<int, int> > > > & getFeaturePairs() const;
+    const vector<vector<vector<pair<int, int> > > > & getFeaturePairs();
     const vector<vector<vector<Point2> > >          & getFeatureMatches() const;
     
     const vector<vector<vector<bool> > >   & getAPAPOverlapMask() const;
@@ -83,7 +85,7 @@ public:
     const vector<vector<InterpolateVertex> > & getInterpolateVerticesOfMatchingPoints() const;
     
     const vector<int> & getImagesVerticesStartIndex() const;
-    const vector<SimilarityElements> & getImagesSimilarityElements(const enum GLOBAL_ROTATION_METHODS & _global_rotation_method) const;
+    const vector<SimilarityElements> & getImagesSimilarityElements(const GLOBAL_ROTATION_METHODS & _global_rotation_method) const;
     const vector<vector<pair<double, double> > > & getImagesRelativeRotationRange() const;
     
     const vector<vector<double> > & getImagesGridSpaceMatchingPointsWeight(const double _global_weight_gamma) const;

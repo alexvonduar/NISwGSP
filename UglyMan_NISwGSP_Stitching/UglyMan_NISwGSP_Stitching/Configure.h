@@ -83,17 +83,19 @@ const double LAMBDA_GAMMA = 10;
 /******************************/
 
 /*** rotation method setting ***/
-enum GLOBAL_ROTATION_METHODS {
+typedef enum {
     GLOBAL_ROTATION_2D_METHOD = 0, GLOBAL_ROTATION_3D_METHOD, GLOBAL_ROTATION_METHODS_SIZE
-};
+} GLOBAL_ROTATION_METHODS;
+
 const string GLOBAL_ROTATION_METHODS_NAME[GLOBAL_ROTATION_METHODS_SIZE] = {
     "[2D]", "[3D]"
 };
 
 /* blending method setting */
-enum BLENDING_METHODS {
+typedef enum {
     BLEND_AVERAGE = 0, BLEND_LINEAR, BLEND_METHODS_SIZE
-};
+} BLENDING_METHODS;
+
 const string BLENDING_METHODS_NAME[BLEND_METHODS_SIZE] = {
     "[BLEND_AVERAGE]", "[BLEND_LINEAR]"
 };

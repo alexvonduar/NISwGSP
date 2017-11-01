@@ -14,7 +14,7 @@
 
 class MeshOptimization {
 public:
-    MeshOptimization(const MultiImages & _multi_images);
+    MeshOptimization(MultiImages & _multi_images);
 
     virtual Mat solve(const BLENDING_METHODS & _blend_method) = 0;
 protected:
@@ -22,7 +22,7 @@ protected:
     void setWeightToLocalSimilarityTerm(const double _weight);
     void setWeightToGlobalSimilarityTerm(const double _weight_beta,
                                          const double _weight_gamma,
-                                         const enum GLOBAL_ROTATION_METHODS _global_rotation_method);
+                                         const GLOBAL_ROTATION_METHODS _global_rotation_method);
     
     const MultiImages & getMultiImages() const;
     
@@ -30,7 +30,7 @@ protected:
     double getLocalSimilarityTermWeight() const;
     double getGlobalSimilarityTermWeightBeta() const;
     double getGlobalSimilarityTermWeightGamma() const;
-    enum GLOBAL_ROTATION_METHODS getGlobalRotationMethod() const;
+    GLOBAL_ROTATION_METHODS getGlobalRotationMethod() const;
     
     void reserveData(vector<Triplet<double> > & _triplets,
                      vector<pair<int, double> > & _b_vector,
@@ -51,7 +51,7 @@ private:
     int getEdgesCount() const;
     int getEdgeNeighborVerticesCount() const;
     
-    const MultiImages * multi_images;
+    MultiImages * multi_images;
     
     double alignment_weight;
     double local_similarity_weight;
@@ -60,7 +60,7 @@ private:
     pair<int, int> alignment_equation; /* begin, count */
     pair<int, int> local_similarity_equation;
     pair<int, int> global_similarity_equation;
-    enum GLOBAL_ROTATION_METHODS global_rotation_method;
+    GLOBAL_ROTATION_METHODS global_rotation_method;
 };
 
 #endif /* defined(__UglyMan_Stitiching__MeshOptimization__) */
