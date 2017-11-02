@@ -36,17 +36,24 @@ const bool LINES_FILTER_LENGTH(const double _data,
 };
 
 
-ImageData::ImageData(const string & _file_dir,
+ImageData::ImageData(const string & _output_dir,
                      const string & _file_full_name,
                      LINES_FILTER_FUNC * _width_filter,
                      LINES_FILTER_FUNC * _length_filter,
                      const string * _debug_dir) {
-    
-    file_dir = &_file_dir;
-    std::size_t found = _file_full_name.find_last_of(".");
+
+	output_dir = &_output_dir;
+	std::size_t pos = _file_full_name.find_last_of("/\\");
+	if (pos == std::string::npos) {
+		pos = 0;
+	} else {
+		pos += 1;
+	}
+	std::string single_name = _file_full_name.substr(pos);
+    std::size_t found = single_name.find_last_of(".");
     assert(found != std::string::npos);
-    file_name = _file_full_name.substr(0, found);
-    file_extension = _file_full_name.substr(found);
+    file_name = single_name.substr(0, found);
+    file_extension = single_name.substr(found);
     debug_dir = _debug_dir;
 
     grey_img = Mat();
@@ -54,8 +61,8 @@ ImageData::ImageData(const string & _file_dir,
     width_filter  = _width_filter;
     length_filter = _length_filter;
     
-    img = imread(*file_dir + file_name + file_extension);
-    rgba_img = imread(*file_dir + file_name + file_extension, IMREAD_UNCHANGED);
+    img = imread(_file_full_name);
+    rgba_img = imread(_file_full_name, IMREAD_UNCHANGED);
     
     float original_img_size = img.rows * img.cols;
     

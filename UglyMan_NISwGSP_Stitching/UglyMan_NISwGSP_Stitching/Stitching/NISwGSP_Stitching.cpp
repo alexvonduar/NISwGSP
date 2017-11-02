@@ -49,23 +49,29 @@ Mat NISwGSP_Stitching::solve(const BLENDING_METHODS & _blend_method) {
     Size2 target_size = normalizeVertices(original_vertices);
     
     Mat result = multi_images.textureMapping(original_vertices, target_size, _blend_method);
-#ifndef NDEBUG
-    multi_images.writeResultWithMesh(result, original_vertices, "-[NISwGSP]" +
-                                     GLOBAL_ROTATION_METHODS_NAME[getGlobalRotationMethod()] +
-                                     BLENDING_METHODS_NAME[_blend_method] +
-                                     "[Mesh]", false);
-    multi_images.writeResultWithMesh(result, original_vertices, "-[NISwGSP]" +
-                                     GLOBAL_ROTATION_METHODS_NAME[getGlobalRotationMethod()] +
-                                     BLENDING_METHODS_NAME[_blend_method] +
-                                     "[Border]", true);
-#endif
+
+    if (multi_images.parameter.debug_dir.length()) {
+        multi_images.writeResultWithMesh(
+            result, original_vertices,
+            "-[NISwGSP]" +
+                GLOBAL_ROTATION_METHODS_NAME[getGlobalRotationMethod()] +
+                BLENDING_METHODS_NAME[_blend_method] + "[Mesh]",
+            false);
+        multi_images.writeResultWithMesh(
+            result, original_vertices,
+            "-[NISwGSP]" +
+                GLOBAL_ROTATION_METHODS_NAME[getGlobalRotationMethod()] +
+                BLENDING_METHODS_NAME[_blend_method] + "[Border]",
+            true);
+    }
+
     return result;
 }
 
 void NISwGSP_Stitching::writeImage(const Mat & _image, const string _post_name) const {
     const MultiImages & multi_images = getMultiImages();
     const Parameter & parameter = multi_images.parameter;
-    string file_name = parameter.file_name;
+    //string file_name = parameter.output_name;
     
-    imwrite(parameter.file_name, _image);
+    imwrite(parameter.output_dir + parameter.output_name, _image);
 }

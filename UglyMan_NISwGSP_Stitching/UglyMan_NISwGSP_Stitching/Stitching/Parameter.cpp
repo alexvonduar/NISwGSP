@@ -66,24 +66,28 @@ Parameter::Parameter(const ProgramParams &_params) {
     size_t len = output_path.length();
     size_t pos = output_path.find_last_of("/\\");
     if (pos != std::string::npos) {
-        result_dir = output_path.substr(0, pos + 1);
+		pos += 1;
+        output_dir = output_path.substr(0, pos);
     } else {
-        result_dir = "./";
+		output_dir = "./";
+		pos = 0;
 	}
 	
 	if (_params.default_name) {
-		file_name = result_dir + _params.output_name;
+		output_name = _params.output_name;
 	} else {
-		file_name = _params.output_name;
+		output_name = output_path.substr(pos);
 	}
 
-	cout << "output file " << file_name << endl;;
+	cout << "output dir " << output_dir << " output name " << output_name << endl;;
 
     if (_params.debug) {
-		debug_dir = result_dir + "/1_debugs/";
+		debug_dir = output_dir + "/1_debugs/";
 		cout << "debug dir " << debug_dir << endl;
         mkdir(debug_dir.c_str(),
-              S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+			  S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+
+		cout << "debug dir " << debug_dir << endl;
 	}
 
 	image_file_full_names = _params.img_names;

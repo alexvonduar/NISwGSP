@@ -46,6 +46,6 @@ int main(int argc, const char *argv[]) {
 
     niswgsp.writeImage(niswgsp.solve(params.blend),
                        BLENDING_METHODS_NAME[params.blend]);
-    timer.end("[NISwGSP] " + multi_images.parameter.file_name);
+    timer.end("[NISwGSP] " + multi_images.parameter.output_name);
     return 0;
 }

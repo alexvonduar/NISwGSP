@@ -9,23 +9,21 @@
 #include "MultiImages.h"
 #include <limits>
 
-MultiImages::MultiImages(const ProgramParams & _params,
-                         LINES_FILTER_FUNC * _width_filter,
-                         LINES_FILTER_FUNC * _length_filter) : parameter(_params) {
-    
-    for(int i = 0; i < parameter.image_file_full_names.size(); ++i) {
-#ifndef NDEBUG
-        images_data.emplace_back(parameter.file_dir,
-                                 parameter.image_file_full_names[i],
-                                 _width_filter,
-                                 _length_filter,
-                                 &parameter.debug_dir);
-#else
-        images_data.emplace_back(parameter.file_dir,
-                                 parameter.image_file_full_names[i],
-                                 _width_filter,
-                                 _length_filter);
-#endif
+MultiImages::MultiImages(const ProgramParams &_params,
+                         LINES_FILTER_FUNC *_width_filter,
+                         LINES_FILTER_FUNC *_length_filter)
+    : parameter(_params) {
+
+    for (int i = 0; i < parameter.image_file_full_names.size(); ++i) {
+        if (parameter.debug_dir.size()) {
+            images_data.emplace_back(
+                parameter.output_dir, parameter.image_file_full_names[i],
+                _width_filter, _length_filter, &parameter.debug_dir);
+        } else {
+            images_data.emplace_back(parameter.output_dir,
+                                     parameter.image_file_full_names[i],
+                                     _width_filter, _length_filter);
+        }
     }
 }
 
@@ -783,11 +781,12 @@ const vector<vector<vector<pair<int, int> > > > & MultiImages::getFeaturePairs()
 			} else {
 				++it;
 			}
-#ifndef NDEBUG
-            writeImageOfFeaturePairs("sRANSAC", match_pair, result);
-#endif
-		}
-		parameter.setImagesMatchGraphPairList(pair_list);
+
+            if (parameter.debug_dir.length()) {
+                writeImageOfFeaturePairs("sRANSAC", match_pair, result);
+            }
+        }
+        parameter.setImagesMatchGraphPairList(pair_list);
     }
     return feature_pairs;
 }
@@ -958,9 +957,11 @@ vector<pair<int, int> > MultiImages::getInitialFeaturePairs(const pair<int, int>
                                          feature_pairs_result[i].feature_index[1]);
         }
     }
-#ifndef NDEBUG
-    writeImageOfFeaturePairs("init", _match_pair, initial_indices);
-#endif
+
+	if (parameter.debug_dir.length()) {
+	    writeImageOfFeaturePairs("init", _match_pair, initial_indices);
+	}
+
     return initial_indices;
 }
 
@@ -1092,7 +1093,7 @@ void MultiImages::writeResultWithMesh(const Mat & _result,
         }
     }
     
-    imwrite(parameter.debug_dir + parameter.file_name + _postfix + ".png", result(rect));
+    imwrite(parameter.debug_dir + parameter.output_name + _postfix + ".png", result(rect));
 }
 
 void MultiImages::writeImageOfFeaturePairs(const string & _name,

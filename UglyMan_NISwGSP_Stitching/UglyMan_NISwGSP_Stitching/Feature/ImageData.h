@@ -36,8 +36,8 @@ LINES_FILTER_FUNC LINES_FILTER_LENGTH;
 class ImageData {
 public:
     string file_name, file_extension;
-    const string * file_dir, * debug_dir;
-    ImageData(const string & _file_dir,
+    const string * output_dir, * debug_dir;
+    ImageData(const string & _output_dir,
               const string & _file_full_name,
               LINES_FILTER_FUNC * _width_filter,
               LINES_FILTER_FUNC * _length_filter,

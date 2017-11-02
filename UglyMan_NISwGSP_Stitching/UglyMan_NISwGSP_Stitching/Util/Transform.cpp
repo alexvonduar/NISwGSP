@@ -58,12 +58,11 @@ Mat getNormalize2DPts(const vector<Point2> & pts, vector<Point2> & newpts) {
     result.at<double>(2, 1) = 0;
     result.at<double>(2, 2) = 1;
     
-#ifndef NDEBUG
     if(newpts.empty() == false) {
         newpts.clear();
         printError("F(getNormalize2DPts) newpts is not empty");
     }
-#endif
+
     newpts.reserve(pts.size());
     for(int i = 0; i < pts.size(); ++i) {
         newpts.emplace_back(pts[i].x * result.at<double>(0, 0) + result.at<double>(0, 2),

@@ -20,10 +20,10 @@ class Parameter {
 public:
     Parameter(const ProgramParams & _params);
     
-    string file_name, file_dir;
+    string output_name, output_dir;
     string stitching_parse_file_name;
     
-    string result_dir, debug_dir;
+    string /*result_dir,*/ debug_dir;
     vector<string> image_file_full_names;
     /* configure */
     int grid_size;
