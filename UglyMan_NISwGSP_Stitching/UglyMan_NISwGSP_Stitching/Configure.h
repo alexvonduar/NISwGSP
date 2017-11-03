@@ -36,7 +36,7 @@ using namespace Eigen;
 
 /*** data setting ***/
 const int GRID_SIZE = 40;
-const int DOWN_SAMPLE_IMAGE_SIZE = 1280 * 9600;
+const int DOWN_SAMPLE_IMAGE_SIZE = 1280 * 960;
 
 /*** APAP ***/
 const double APAP_GAMMA = 0.0015;
