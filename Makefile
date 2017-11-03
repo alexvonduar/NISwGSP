@@ -1,4 +1,4 @@
-SRC_DIR=UglyMan_NISwGSP_Stitching/UglyMan_NISwGSP_Stitching
+SRC_DIR=src
 
 LIBS=-L/home/alex/work/vlfeat/bin/glnxa64
 
